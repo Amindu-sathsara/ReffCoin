@@ -1,4 +1,4 @@
-import Image from "next/image";
+/*import Image from "next/image";
 
 export default function Home() {
   return (
@@ -60,6 +60,37 @@ export default function Home() {
           </a>
         </div>
       </main>
+    </div>
+  );
+}
+*/
+
+// src/app/page.tsx
+'use client';
+import HeroSection from '@/components/HeroSection';
+import PropertyCard from '@/components/PropertyCard';
+import { useGetPropertiesQuery, useGetByLocationQuery } from '@/lib/api';
+import { useSearchParams } from 'next/navigation';
+
+export default function Home() {
+  const searchParams = useSearchParams();
+  const location = searchParams.get('location');
+  const { data: properties = [], isLoading } = location
+    ? useGetByLocationQuery(location)
+    : useGetPropertiesQuery();
+
+  return (
+    <div>
+      <HeroSection />
+      <section className="max-w-7xl mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {isLoading ? (
+            <p className="col-span-full text-center">Loading...</p>
+          ) : (
+            properties.map((p) => <PropertyCard key={p._id} property={p} />)
+          )}
+        </div>
+      </section>
     </div>
   );
 }
